@@ -36,6 +36,7 @@ router.post(`/${APINAME}/ocr`, async (req, res) => {
         await fireOCR(applicantId, secretKey, token)
         setTimeout(async () => {
             getApplicant(externalUserId, secretKey, token).then((app) => {
+                console.log("app", app.data)
                 res.status(200).json({
                     appData: app.data
                 })
