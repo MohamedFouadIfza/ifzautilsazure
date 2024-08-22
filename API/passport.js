@@ -39,6 +39,10 @@ router.post(`/${APINAME}/ocr`, async (req, res) => {
                 res.status(200).json({
                     appData: app.data
                 })
+            }).catch((E)=>{
+                res.status(400).json({
+                    appData: E
+                }) 
             })
         }, 3000);
 
