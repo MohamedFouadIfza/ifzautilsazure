@@ -4,7 +4,7 @@ const pdf = require('pdf-parse');
 
 const APINAME = "medicaltest";
 
-router.post(`/${APINAME}/test`, async (req,res)=>{
+router.get(`/${APINAME}/test`, async (req,res)=>{
 
     res.status(200).json({
         result: "it is work"
