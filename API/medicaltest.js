@@ -7,7 +7,7 @@ const APINAME = "medicaltest";
 router.get(`/${APINAME}/test`, async (req,res)=>{
 
     res.status(200).json({
-        result: "it is work"
+        result: "it is work new"
     })
 
 })
