@@ -95,8 +95,9 @@ router.post(`/${APINAME}/ocrr`, upload.single('file'), async (req, res) => {
         externalUserId,
         secretKey,
         token
-    } = req.body
-
+    } = req.query
+    console.log("req.params",req.query)
+    // 3876578000686585498
     const fileName = req.file.filename;
 
     const fullFilePath = path.join(`${fileDIr}`, `${fileName}`)
