@@ -86,53 +86,54 @@ router.post(`/${APINAME}/ocr`, async (req, res) => {
 })
 
 router.post(`/${APINAME}/ocrr`, upload.single('file'), async (req, res) => {
+    try {
+        const {
+            applicantId,
+            country,
+            externalUserId,
+            secretKey,
+            token
+        } = req.query
+        console.log("req.params", req.query)
+        // 3876578000686585498
+        const fileName = req.file.filename;
 
+        const fullFilePath = path.join(`${fileDIr}`, `${fileName}`)
+        await sendPassport(applicantId, fullFilePath, {
+            country,
+            idDocType: "PASSPORT"
+        }, secretKey, token)
 
-    // try {
-    const {
-        applicantId,
-        country,
-        externalUserId,
-        secretKey,
-        token
-    } = req.query
-    console.log("req.params",req.query)
-    // 3876578000686585498
-    const fileName = req.file.filename;
+        await fireOCR(applicantId, secretKey, token)
 
-    const fullFilePath = path.join(`${fileDIr}`, `${fileName}`)
-    // res.status(200).json({
-    //     fdf: fullFilePath
-    // })
-    await sendPassport(applicantId, fullFilePath, {
-        country,
-        idDocType: "PASSPORT"
-    }, secretKey, token)
-
-    await fireOCR(applicantId, secretKey, token)
-
-    setTimeout(async () => {
-        getApplicant(externalUserId, secretKey, token).then((app) => {
-            console.log("app", app.data)
-            res.status(200).json({
-                appData: app.data
+        setTimeout(async () => {
+            getApplicant(externalUserId, secretKey, token).then((app) => {
+                console.log("app", app.data)
+                res.status(200).json({
+                    appData: app.data
+                })
+            }).catch((E) => {
+                res.status(400).json({
+                    appData: E
+                })
+            }).finally(() => {
+                fs.rm(fullFilePath, (err) => {
+                    if (err) {
+                        res.status(400).json({
+                            err
+                        })
+                        return
+                    }
+                    console.log("file deleted")
+                })
             })
-        }).catch((E) => {
-            res.status(400).json({
-                appData: E
-            })
-        }).finally(() => {
-            fs.rm(fullFilePath, (err) => {
-                if (err) {
-                    res.status(400).json({
-                        err
-                    })
-                    return
-                }
-                console.log("file deleted")
-            })
+        }, 3000);
+    } catch (EE) {
+        res.status(400).json({
+            EE
         })
-    }, 3000);
+    }
+
 
 })
 
