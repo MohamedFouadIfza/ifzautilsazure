@@ -106,28 +106,45 @@ router.post(`/${APINAME}/ocrr`, upload.single('file'), async (req, res) => {
 
         await fireOCR(applicantId, secretKey, token)
 
-        setTimeout(async () => {
-            getApplicant(externalUserId, secretKey, token).then((app) => {
-                console.log("app", app.data)
-                res.status(200).json({
-                    appData: app.data
-                })
-            }).catch((E) => {
+        fs.rm(fullFilePath, (err) => {
+            if (err) {
                 res.status(400).json({
-                    appData: E
+                    err
                 })
-            }).finally(() => {
-                fs.rm(fullFilePath, (err) => {
-                    if (err) {
-                        res.status(400).json({
-                            err
-                        })
-                        return
-                    }
-                    console.log("file deleted")
-                })
+                return
+            }
+            console.log("file deleted")
+            res.status(200).json({
+                status: "done"
             })
-        }, 3000);
+        })
+
+      
+
+        // setTimeout(async () => {
+        //     getApplicant(externalUserId, secretKey, token).then((app) => {
+        //         console.log("app", app.data)
+        //         res.status(200).json({
+        //             appData: app.data
+        //         })
+        //     }).catch((E) => {
+        //         res.status(400).json({
+        //             appData: E
+        //         })
+        //     }).finally(() => {
+        //         fs.rm(fullFilePath, (err) => {
+        //             if (err) {
+        //                 res.status(400).json({
+        //                     err
+        //                 })
+        //                 return
+        //             }
+        //             console.log("file deleted")
+        //         })
+        //     })
+        // }, 3000);
+
+
     } catch (EE) {
         res.status(400).json({
             EE
