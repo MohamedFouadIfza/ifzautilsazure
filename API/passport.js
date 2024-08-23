@@ -99,10 +99,11 @@ router.post(`/${APINAME}/ocrr`, upload.single('file'), async (req, res) => {
 
     const fileName = req.file.filename;
 
+    const fullFilePath = path.join(`${fileDIr}`, `${fileName}`)
     res.status(200).json({
-        fdf: `${fileDIr}/${fileName}`
+        fdf: fullFilePath
     })
-    await sendPassport(applicantId, `${fileDIr}/${fileName}`, {
+    await sendPassport(applicantId, fullFilePath, {
         country,
         idDocType: "PASSPORT"
     }, secretKey, token)
@@ -120,7 +121,7 @@ router.post(`/${APINAME}/ocrr`, upload.single('file'), async (req, res) => {
                 appData: E
             })
         }).finally(() => {
-            fs.rm(`${fileDIr}/${fileName}`, (err) => {
+            fs.rm(fullFilePath, (err) => {
                 if (err) {
                     res.status(400).json({
                         err
