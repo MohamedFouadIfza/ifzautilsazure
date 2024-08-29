@@ -5,6 +5,14 @@ const fs = require('fs');
 const path = require('path');
 const env = process.env
 
+router.get(`/${APINAME}/test`, async (req,res)=>{
+
+    res.status(200).json({
+        result: `it is work ${APINAME}`
+    })
+
+})
+
 router.get(`/${APINAME}/convertedJson/:id`, async (req, res) => {
 
     const filePath = path.join(__dirname, "../", "resources", "convertedJson", `${req.params.id}.json`);
