@@ -3,6 +3,13 @@ const express = require('express');
 const router = express.Router();
 const pdf = require('pdf-parse');
 
+function removeDuplicateSequences(input) {
+    // Use a regular expression to match duplicate sequences
+    const regex = /(\d+)\1+/;
+
+    // Replace duplicates with a single occurrence of the sequence
+    return input.replace(regex, '$1');
+}
 
 router.post(`/${APINAME}/extractDates`, async (req, res) => {
 
@@ -10,10 +17,11 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
 
     let dataBuffer = Buffer.from(base64, 'base64')
     pdf(dataBuffer).then(({ text }) => {
-        // console.log("text", extractEnglishText(text))
-
         const dateRegex = /(\d{2}-[A-Za-z]{3}-\d{4})/g;
         const dates = text.match(dateRegex);
+        const licenseRegex = /License Number(\d+)/;
+        const licenseMatch = text.match(licenseRegex);
+        const licenseNumber = licenseMatch ? licenseMatch[1] : null;
 
         if (dates) {
             const issueDate = dates[0]; // First occurrence of date (Issue Date)
@@ -21,11 +29,12 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
 
             res.status(200).json({
                 expiryDate,
-                issueDate
+                issueDate,
+                licenseNumber: removeDuplicateSequences(licenseNumber)
             })
         } else {
             res.status(400).json({
-              err: "No dates found"
+                err: "No dates found"
             })
         }
 
