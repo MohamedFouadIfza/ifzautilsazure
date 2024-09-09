@@ -11,6 +11,7 @@ var app = express();
 
 var MedicalTest = require('./API/medicaltest')
 var Portal = require('./API/portal')
+var Desk = require('./API/desk')
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -34,6 +35,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.use('/api', MedicalTest);
 app.use('/api', Portal);
+app.use('/api', Desk);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
