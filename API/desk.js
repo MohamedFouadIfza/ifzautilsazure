@@ -17,11 +17,18 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
 
     let dataBuffer = Buffer.from(base64, 'base64')
     pdf(dataBuffer).then(({ text }) => {
+        // console.log("text",text)
+        const licenseeRegex = /Licensee\s+([\w\s-]+)/;
+        const match = text.match(licenseeRegex);
+        const licensee = match[1].trim();
         const dateRegex = /(\d{2}-[A-Za-z]{3}-\d{4})/g;
         const dates = text.match(dateRegex);
         const licenseRegex = /License Number(\d+)/;
         const licenseMatch = text.match(licenseRegex);
         const licenseNumber = licenseMatch ? licenseMatch[1] : null;
+        const tradeNameRegex = /Trade Name\s+([\w\s-]+)/;
+        const tradeNameMatch = text.match(tradeNameRegex);
+        const tradeName = tradeNameMatch[1].trim();
 
         if (dates) {
             const issueDate = dates[0]; // First occurrence of date (Issue Date)
@@ -30,7 +37,10 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
             res.status(200).json({
                 expiryDate,
                 issueDate,
-                licenseNumber: removeDuplicateSequences(licenseNumber)
+                licenseNumber: removeDuplicateSequences(licenseNumber),
+                licensee: licensee.replaceAll("\n", ""),
+                tradeName: tradeName.replaceAll("\n", "")
+
             })
         } else {
             res.status(400).json({
