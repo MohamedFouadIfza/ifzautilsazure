@@ -22,7 +22,10 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
         const match = text.match(licenseeRegex);
         let licensee;
         if(match) {
-            licensee = match[1].trim();
+            console.log("sfdfd",match)
+            // licensee = match[1].trim();
+            licensee = ""
+
         }
         const dateRegex = /(\d{2}-[A-Za-z]{3}-\d{4})/g;
         const dates = text.match(dateRegex);
