@@ -19,29 +19,38 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
     pdf(dataBuffer).then(({ text }) => {
         console.log("res", text)
         // console.log("text",text)
-        const licenseeRegex = /Licensee\s+([\w\s-]+)/;
+        // const licenseeRegex = /Licensee\s+([\w\s-]+)/;
+        const licenseeRegex = /Licensee\s*([^\n\r]+)/;
         const match = text.match(licenseeRegex);
-        let licensee;
-        if(match) {
-            console.log("sfdfd",match)
-            // licensee = match[1].trim();
-            licensee = ""
+        // let licensee;
+        // if(match) {
+        //     console.log("sfdfd",match)
+        //     // licensee = match[1].trim();
+        //     licensee = ""
 
-        }
+        // }
         const dateRegex = /(\d{2}-[A-Za-z]{3}-\d{4})/g;
         const dates = text.match(dateRegex);
         const licenseRegex = /License Number(\d+)/;
         const licenseMatch = text.match(licenseRegex);
         const licenseNumber = licenseMatch ? licenseMatch[1] : null;
-        const tradeNameRegex = /Trade Name\s+([\w\s-]+)/;
-        const tradeNameMatch = text.match(tradeNameRegex);
-        let tradeName = ""
+        const tradeNameRegex = /Trade Name\s*([^\n\r]+)/;
+        // const tradeNameMatch = text.match(tradeNameRegex);
+        // let tradeName = ""
 
-        if(tradeNameMatch) {
-            console.log("tradeNameMatch",tradeNameMatch);
+        if (tradeNameMatch) {
+            console.log("tradeNameMatch", tradeNameMatch);
             // tradeName = tradeNameMatch[1].trim();
-            tradeName = ""
+            // tradeName = ""
         }
+
+        // Extract Licensee
+        const licenseeMatch = text.match(licenseeRegex);
+        const licensee = licenseeMatch ? licenseeMatch[1].trim() : '';
+
+        // Extract Trade Name
+        const tradeNameMatch = text.match(tradeNameRegex);
+        const tradeName = tradeNameMatch ? tradeNameMatch[1].trim() : '';
 
         if (dates) {
             const issueDate = dates[0]; // First occurrence of date (Issue Date)
@@ -52,7 +61,7 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
                 issueDate,
                 licenseNumber: removeDuplicateSequences(licenseNumber),
                 licensee: licensee ? licensee.replaceAll("\n", "") : "",
-                tradeName: tradeName ? tradeName.replaceAll("\n", ""): ""
+                tradeName: tradeName ? tradeName.replaceAll("\n", "") : ""
 
             })
         } else {
