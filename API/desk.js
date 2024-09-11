@@ -20,7 +20,10 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
         // console.log("text",text)
         const licenseeRegex = /Licensee\s+([\w\s-]+)/;
         const match = text.match(licenseeRegex);
-        const licensee = match[1].trim();
+        let licensee;
+        if(match) {
+            licensee = match[1].trim();
+        }
         const dateRegex = /(\d{2}-[A-Za-z]{3}-\d{4})/g;
         const dates = text.match(dateRegex);
         const licenseRegex = /License Number(\d+)/;
