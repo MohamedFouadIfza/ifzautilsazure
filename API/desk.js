@@ -34,7 +34,13 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
         const licenseNumber = licenseMatch ? licenseMatch[1] : null;
         const tradeNameRegex = /Trade Name\s+([\w\s-]+)/;
         const tradeNameMatch = text.match(tradeNameRegex);
-        const tradeName = tradeNameMatch[1].trim();
+        let tradeName = ""
+
+        if(tradeNameMatch) {
+            console.log("tradeNameMatch",tradeNameMatch);
+            // tradeName = tradeNameMatch[1].trim();
+            tradeName = ""
+        }
 
         if (dates) {
             const issueDate = dates[0]; // First occurrence of date (Issue Date)
