@@ -2,7 +2,7 @@ const APINAME = "desk";
 const express = require('express');
 const router = express.Router();
 const pdf = require('pdf-parse');
-
+//https://ifzautils.onrender.com/api/desk/extractDates
 function removeDuplicateSequences(input) {
     // Use a regular expression to match duplicate sequences
     const regex = /(\d+)\1+/;
@@ -17,6 +17,7 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
 
     let dataBuffer = Buffer.from(base64, 'base64')
     pdf(dataBuffer).then(({ text }) => {
+        console.log("res", text)
         // console.log("text",text)
         const licenseeRegex = /Licensee\s+([\w\s-]+)/;
         const match = text.match(licenseeRegex);
