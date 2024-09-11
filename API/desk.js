@@ -50,8 +50,8 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
                 expiryDate,
                 issueDate,
                 licenseNumber: removeDuplicateSequences(licenseNumber),
-                licensee: licensee.replaceAll("\n", ""),
-                tradeName: tradeName.replaceAll("\n", "")
+                licensee: licensee ? licensee.replaceAll("\n", "") : "",
+                tradeName: tradeName ? tradeName.replaceAll("\n", ""): ""
 
             })
         } else {
