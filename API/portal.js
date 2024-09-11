@@ -34,7 +34,7 @@ router.post(`/${APINAME}/convertjsontofile/:id`, async (req, res) => {
 
     const filePath = path.join(__dirname, "../", "resources", "convertedJson");
 
-    const downloadPath = path.join(env == "development" ? "http://localhost:3000" : "https://mrz-code-scanner.onrender.com", "convertedJson", `${id}`);
+    const downloadPath = path.join(env == "development" ? "http://localhost:3000" : "https://webapp-dev-appws2-epedd7gcb4cxfdga.uaenorth-01.azurewebsites.net", "convertedJson", `${id}`);
     const data = JSON.stringify(json, null, 2)
     fs.writeFile(`${filePath}/${id}.json`, data, 'utf8', (err) => {
         if (err) {
