@@ -33,23 +33,23 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
         const licenseRegex = /License Number(\d+)/;
         const licenseMatch = text.match(licenseRegex);
         const licenseNumber = licenseMatch ? licenseMatch[1] : null;
-        const tradeNameRegex = /Trade Name\s*([^\n\r]+)/;
+        // const tradeNameRegex = /Trade Name\s*([^\n\r]+)/;
         // const tradeNameMatch = text.match(tradeNameRegex);
         // let tradeName = ""
 
-        if (tradeNameMatch) {
-            console.log("tradeNameMatch", tradeNameMatch);
-            // tradeName = tradeNameMatch[1].trim();
-            // tradeName = ""
-        }
+        // if (tradeNameMatch) {
+        //     console.log("tradeNameMatch", tradeNameMatch);
+        //     // tradeName = tradeNameMatch[1].trim();
+        //     // tradeName = ""
+        // }
 
         // Extract Licensee
-        const licenseeMatch = text.match(licenseeRegex);
-        const licensee = licenseeMatch ? licenseeMatch[1].trim() : '';
+        // const licenseeMatch = text.match(licenseeRegex);
+        // const licensee = licenseeMatch ? licenseeMatch[1].trim() : '';
 
         // Extract Trade Name
-        const tradeNameMatch = text.match(tradeNameRegex);
-        const tradeName = tradeNameMatch ? tradeNameMatch[1].trim() : '';
+        // const tradeNameMatch = text.match(tradeNameRegex);
+        // const tradeName = tradeNameMatch ? tradeNameMatch[1].trim() : '';
 
         if (dates) {
             const issueDate = dates[0]; // First occurrence of date (Issue Date)
@@ -59,8 +59,8 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
                 expiryDate,
                 issueDate,
                 licenseNumber: removeDuplicateSequences(licenseNumber),
-                licensee: licensee ? licensee.replaceAll("\n", "") : "",
-                tradeName: tradeName ? tradeName.replaceAll("\n", "") : ""
+                // licensee: licensee ? licensee.replaceAll("\n", "") : "",
+                // tradeName: tradeName ? tradeName.replaceAll("\n", "") : ""
 
             })
         } else {
