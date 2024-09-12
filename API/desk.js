@@ -17,7 +17,6 @@ router.post(`/${APINAME}/extractDates`, async (req, res) => {
 
     let dataBuffer = Buffer.from(base64, 'base64')
     pdf(dataBuffer).then(({ text }) => {
-        console.log("res", text)
         // console.log("text",text)
         // const licenseeRegex = /Licensee\s+([\w\s-]+)/;
         const licenseeRegex = /Licensee\s*([^\n\r]+)/;
