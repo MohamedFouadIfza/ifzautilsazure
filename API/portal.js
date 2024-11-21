@@ -3,9 +3,11 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
+const { createPdfFileFormBase64, extractPdfImages, deleteFilesFromFolder, getFiles } = require('../utils/convertPdf');
 const env = process.env
+const cron = require('node-cron')
 
-router.get(`/${APINAME}/test`, async (req,res)=>{
+router.get(`/${APINAME}/test`, async (req, res) => {
 
     res.status(200).json({
         result: `it is work ${APINAME}`
@@ -63,7 +65,6 @@ router.post(`/${APINAME}/convertjsontofile/:id`, async (req, res) => {
 })
 
 
-
 router.post(`/${APINAME}/save-json/:id`, (req, res) => {
     try {
         const jsonData = req.body;
@@ -89,6 +90,50 @@ router.post(`/${APINAME}/save-json/:id`, (req, res) => {
 
 });
 
+router.post(`/${APINAME}/convertpdftoimg`, async (req, res) => {
+    const { base64Pdf } = req.body;
+
+    if (!base64Pdf) {
+        return res.status(400).json({ error: 'No PDF data provided' });
+    }
+
+    try {
+        const savePath = path.join(__dirname, "document.pdf")
+        const outputFolder = path.join(__dirname, "../", "public", "output"); // Output folder
+
+        // const files =  getFiles(outputFolder)
+        deleteFilesFromFolder(outputFolder, () => { })
+
+        createPdfFileFormBase64(base64Pdf, savePath, () => {
+            extractPdfImages(savePath, outputFolder).then(() => {
+                fs.unlinkSync(savePath)
+                getFiles(outputFolder, (files) => {
+                    const isProduction = true;
+                    const baseUrl = `${isProduction ? "https://webapp-dev-appws2-epedd7gcb4cxfdga.uaenorth-01.azurewebsites.net":"http://localhost:3000"}`
+                    const perviewFiles = files.map((file) => `${baseUrl}/output/${file}`)
+                    const downloadFiles = files.map((file) => `${baseUrl}/api/portal/convertpdftoimg/${file}`)
+                    res.status(200).json({ perviewFiles, downloadFiles })
+                })
+            })
+        })
+    } catch (e) {
+        console.log("eee", e)
+        res.status(400).json({ "dd": e })
+    }
+});
+
+router.get(`/${APINAME}/convertpdftoimg/:filename`, (req, res) => {
+    const fileName = req.params.filename;
+    const filePath = path.join(__dirname, "../", "public", "output", fileName); // Output folder
+  
+    // Check if the file exists
+    res.download(filePath, fileName, (err) => {
+      if (err) {
+        console.error('Error downloading file:', err);
+        res.status(404).send('File not found.');
+      }
+    });
+  });
 router.get(`/${APINAME}/download/:fileName`, (req, res) => {
     try {
         const fileName = req.params.fileName;

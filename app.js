@@ -6,7 +6,7 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+const cron = require('node-cron')
 var app = express();
 
 var MedicalTest = require('./API/medicaltest')
@@ -26,8 +26,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // var bodyParser = require('body-parser');
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true}));
 
 // app.use(express.json({ limit: '50mb',  }));
 // app.use(express.urlencoded({ extended: true, limit: '50mb', parameterLimit: 500000 }));
@@ -37,6 +37,12 @@ app.use('/api', MedicalTest);
 app.use('/api', Portal);
 app.use('/api', Desk);
 
+cron.schedule("00 01 07 * * *", () => {
+  console.log("function run from app.js")
+  deleteFilesFromFolder(outputFolder, () => {
+      console.log("delted")
+  })
+})
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
