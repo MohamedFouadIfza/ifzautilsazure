@@ -5,7 +5,6 @@ const fs = require('fs');
 const path = require('path');
 const { createPdfFileFormBase64, extractPdfImages, deleteFilesFromFolder, getFiles } = require('../utils/convertPdf');
 const env = process.env
-const cron = require('node-cron')
 
 router.get(`/${APINAME}/test`, async (req, res) => {
 
